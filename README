@@ -1,0 +1,21 @@
+# [nm8]( demo - http://www.bjw.co.nz/developer/projects/nm8/index.html)
+
+nm8 is a simple jquery plugin to enable you to automate jquery commands using xml scripts 
+This enable you to make awesome banner cartoons, image sliders, even fully blown automated, interactive websites.
+
+## Features
+
+* HTML5 ready
+* Cross-browser compatible (Chrome, Opera, Firefox, IE).
+* Extendable
+* Fontawesome easy integration
+
+
+## License
+
+### Major components:
+* jQuery: MIT/GPL license
+* jQueryUI: MIT/GPL license
+
+### Everything else:
+MIT/GPL license
