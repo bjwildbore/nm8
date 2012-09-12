@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<screenplay> 
+	<config>
+		<appversion id='appversion' value='1' />
+		<stageconfig id='stage' width='720' height='540' border='0' />
+	</config>
+
+	<style>
+	<![CDATA[
+	#vig_container{pointer-events:none;}
+	#item1{background-image:url('scenes/images/head.png')}
+	#item2{background-image:url('scenes/images/bg_trees1.png')}
+	#item3{background-image:url('scenes/images/bg_trees1.png')}
+	#vig{background-image:url('scenes/images/vig.png')}
+	#jcb{background-image:url('scenes/images/jcb.png')}
+
+	]]>
+	</style>	
+
+	<inventory>		
+		<item id='item1' width='200' height='100' layer='92' top="0" left="0"  >
+			<payload><![CDATA[<div style=''> </div>]]></payload>					
+			<click>				
+				<action name='runScene' sceneId='1' />		
+			</click>
+		</item>	
+
+		<item id='jcb'  width='15' height='30' layer='99' top="67" left="50" >
+			<payload><![CDATA[<div style=''>asdf</div>]]></payload>	
+			<click>				
+				<action name='runScene' sceneId='2' />		
+			</click>	
+		</item>
+		<item id='vig'   width='100' height='100' layer='100' top="0" left="0" />	
+		<item id='item2' width='100' height='100' layer='95' top="0" left="0" >			
+		
+			<click>	
+				<action name='runScene' sceneId='2'  />				
+				<action name='runScript' ><![CDATA[
+				//console.log('hi');
+				//console.log(obj);
+				]]></action>
+			</click>							
+		</item>	
+		<item id='item3' width='100' height='100' layer='98' top="0" left="-100" >			
+			<click>				
+			</click>							
+		</item>		
+	</inventory>
+
+	<scenes>	
+		<scene id='1' title='dashboard'> 			
+			<init>
+			<xmlAction name='doSomethingCool' itemID='jcb' />
+
+		<!--	
+			<customAction itemID='item1' name='showIt' ></customAction>
+				<action name='runScript' ><![CDATA[
+				console.log('done');			
+				]]></action>
+				
+				<customAction name='doSomething' itemID='jcb' />
+				
+					
+			<wait delay="5000">
+				<action itemID='jcb' name='bounce' duration='500' step='1'  />				
+			</wait>
+			<repeat every='5000' count='2' >
+				<action itemID='item1' name='hide' speed='slow'  />
+				<action name="wait" delay="500">
+				  <action itemID='item1' name='show' speed='slow'  />
+				</action>
+			</repeat>
+			
+		<action itemID='item1' name='show'  />
+			<action itemID='jcb' name='changeClass' className='a'  />
+			<action itemID='jcb' name='move' top='0' left='0' animate="1" duration='3000'  easing="easeInOutQuart" />		
+		<action  name='openWindow' href='http://www.google.com' />	
+<action itemID='jcb' name='alterProperties' details='{"left":"40%","top":"50%"}' animate="1" duration='3000'  easing="easeInOutQuart" />	
+<action itemID='jcb' name='scrollV' direction='down' duration='5000' step='1' />	
+			<action itemID='jcb' name='alterProperties' details='{"left":"0%","top":"73%"}' animate="1" duration='5000'  easing="easeInOutBounce" />
+			<action itemID='jcb' name='scrollH' direction='ltr' duration='5000' step='1' />
+			<action itemID='jcb' name='bounce' duration='500' step='2'  />
+			
+			
+			<action itemID='jcb' name='scrollV' direction='down' duration='5000' step='1' />
+			<action itemID='jcb' name='bounce' duration='500' step='10'  />
+			<action itemID='jcb' name='shake' duration='700' step='7'  />
+			
+			
+			<action itemID='jcb' name='bounce' duration='500' step='2'  />			
+			
+				<action itemID='item1' name='bounce' duration='5000' step='5'  />
+				<action itemID='item1' name='shake' duration='10000' step='10'  /> 
+				<action itemID='item2' name='scrollH' direction='ltr' duration='50' step='1' repeat='repeat-x' />
+				<action itemID='item3' name='scrollH' direction='ltr' duration='50' step='1' repeat='repeat-x' />					
+			
+				<action itemID='item1' name='scrollVs' direction='up' duration='50' step='1' />
+				<action itemID='item1' name='scrollBGVs' direction='up' duration='50' step='1' repeat='repeat-y' />
+				<action itemID='item1' name='scrollBGH' direction='ltr' duration='10' step='11' repeat='repeat-x' />
+				<action itemID='item2' name='bounce' duration='550' step='2' />
+				<action itemID='item2' name='alterProperties' details='{"left":"70%","top":"30%"}' animate="1" duration='1000'  easing="easeInOutQuart" />	
+-->				
+			</init>
+			
+			
+		</scene>  
+		
+		<transition from="1" to='2' timeframe="1000">
+			<action itemID='jcb' name='bounce' duration='500' step='1'  />	
+						<action name='runScript' ><![CDATA[
+				//console.log('transition');				
+				]]></action>		
+		</transition> 
+		
+		<scene id='2' title='about'> 			
+			<init>					 				  
+			<action name='runScript' ><![CDATA[
+				//console.log('scene 2');				
+				]]></action>	
+			</init>
+			<exit timeframe="1000">
+			</exit>				
+		</scene> 		
+	</scenes>
+	
+	<xmlActions>	
+		<xmlAction name='doSomethingCool' ><![CDATA[					
+					//console.log('here I am doing something');
+					//console.log(id);
+					//console.log(sceneId);
+					//console.log(obj);
+					var itemContainer = '#' +id+'_container';
+					//console.log(obj);					
+					$(itemContainer).hide(obj.attr('effect'),{},obj.attr('speed') );	
+					]]>
+		</xmlAction>			
+	</xmlActions>
+
+	
+</screenplay> 

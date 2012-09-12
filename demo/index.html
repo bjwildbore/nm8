@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>BJW - Web Technologist / Software Developer</title>
+<link rel="shortcut icon" href="/developer/templates/rt_chromatophore/images/favicon.ico" />
+
+<!-- include the libraries that nm8 depends on -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/base/jquery-ui.css" type="text/css" rel="stylesheet" />
+
+<!-- include the nm8 js ans css files -->
+<script type="text/javascript" src="../jquery.nm8.js"></script>
+<link href="../jquery.nm8.css" type="text/css" rel="stylesheet" />
+
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+
+	//run the nm8 plugin against the target with the path to the xml file
+    $("#app").nm8({screenplay:'scenes/xml/movement.xml'});  
+
+
+	//optional method of extending the plugin using hardcoded javascript
+	(function($) {
+		var extensionActions = {
+			showIt: function(id, sceneId, obj){
+				alert(id, sceneId, obj);
+				return true;
+			}
+		};
+		
+		$.extend(true, $("#app").nm8.customMethods, extensionActions);
+		
+	})(jQuery);
+	
+});
+
+</script>
+
+
+<style>
+	/* responsive styling rules for demonstration */
+	#app{width:700px;height:400px;}
+
+	@media screen and (min-width: 0px) and (max-width: 419px) { 
+		#app{width:200px;height:100px;}  
+	}
+
+	@media screen and (min-width: 420px) and (max-width: 779px) {        
+		#app{width:400px;height:200px;}
+	}
+</style>
+
+</head>
+
+<body>
+	<!-- The target container that we want to turn into our nm8 stage -->
+	<div id="app"></div>      
+</body>
+</html>
