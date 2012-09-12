@@ -219,7 +219,7 @@
 			var xml = $this.data('screenplay');				
 			
 			$(xml).find('inventory item[id='+id+'] '+type+'').each(function(){	
-				//console.log($(this));
+				
 				$this.nm8('runActions',$(this), $this.data('current'));						
 			});				
 			
@@ -246,6 +246,10 @@
 			var itemContainer = '#' +id+'_container';	
 			$(itemContainer).removeClass(obj.attr('className'));			
 		},		
+
+		removeItem: function(id, sceneId, obj){			
+			$(this).remove('id+'_container);			
+		},	
 		
 		show: function(id, sceneId, obj){			
 			var itemContainer = '#' +id+'_container';	
