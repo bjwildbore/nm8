@@ -6,17 +6,20 @@
 .noPointer{
 	pointer-events:none;
 }
-.nm8Stage .lens  *{
+
+.nm8Stage .lens  * {
 	background-size: cover;	
 }
 .nm8Parent{position:absolute;}
-.nm8Bouncer, .nm8Shaker, .nm8Payload{position:relative;width:100%;height:100%;}
+.nm8Bouncer, .nm8Shaker, .nm8Payload{
+	position:relative;
+	width:100%;
+	height:100%;
+}
 
-
-/* resizing img - thanks to: http://blog.kurtschindler.net/post/flexible-dynamically-resizing-images-with-css */
 .nm8Stage img {
-	    max-width: 100%;
-	    height: auto;
-	    width: auto\9; /* ie8 */
-	}
+	max-width: 100%;
+	height: auto;
+	width: auto\9; /* ie8 */
+}
 

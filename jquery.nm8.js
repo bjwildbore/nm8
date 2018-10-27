@@ -1,15 +1,11 @@
 (function($){ 
-/*
-	todo:
-	conditional statements
-*/	
 	var methods = {
 	
 		init : function( options ){
-			var $this = $(this);
+			var $self = $(this);
 			var opts = $.extend({}, $.fn.nm8.defaults, options);
 			window.aniMatrix = new Array(1);
-			$this.data('animationSwitch',true);
+			$self.data('animationSwitch',true);
 			$.ajax({
 				type: "GET",
 				url: opts.screenplay,
@@ -20,13 +16,12 @@
 					//console.log(thrownError);
 				},
 			
-				success: function(xml) {
-				
-					$this.data('screenplay' , xml);
-					$this.data('current' , 0);
+				success: function(xml) {				
+					$self.data('screenplay' , xml);
+					$self.data('current' , 0);
 					
 					$(xml).find('stageconfig').each(function(){												
-						$this.nm8('createStage');
+						$self.nm8('createStage');
 					});	
 					
 					$(xml).find('style').each(function(){												
@@ -34,8 +29,19 @@
 					});
 					
 					$(xml).find('inventory item').each(function(){
-						var itemId = $(this).attr('id');
-						$this.nm8('addItem',itemId,$(this).find('payload').text(),$(this).attr('hide'), $(this).attr('width'),$(this).attr('height'),$(this).attr('top'), $(this).attr('left'),$(this).attr('layer'),$(this).attr('onClick'),$(this).attr('parentID'));
+						var $item = $(this);						
+
+						$self.nm8( 'addItem', 
+									$item.attr('id'),
+									$item.find('payload').text(), 
+									$item.attr('hide'), 
+									$item.attr('width'), 
+									$item.attr('height'), 
+									$item.attr('top'), 
+									$item.attr('left'), 
+									$item.attr('layer'), 
+									$item.attr('onClick'),
+									$item.attr('parentID'));
 					});
 
 					$(xml).find('xmlActions xmlAction').each(function(){
@@ -50,9 +56,8 @@
 						//console.log(methods);
 						
 					});
-
 					
-					$this.nm8('start');							
+					$self.nm8('start');							
 				
 				}
 			});			
@@ -60,55 +65,56 @@
 		},
 
 		createStage :	function(){
-			$(this).empty();
-			$(this).addClass('nm8Stage')			;
-			$(this).append("<div class='lens' style='position:relative;width:100%;height:100%;'></div>");	
+			$(this).empty()
+				   .addClass('nm8Stage')
+				   .append("<div class='lens' style='position:relative;width:100%;height:100%;'></div>");	
 		},
 		
 		start: function(){			
-			$(this).nm8('runScene',1); 
+			$(this).nm8('runScene', 1); 
 		},
 			
 		runScene : function(id){
-			var $this = $(this);
-			var xml = $this.data('screenplay');	
-			var delay = 0;
+			var $self = $(this),
+				xml = $self.data('screenplay'),
+				$xml = $(xml), 	
+				delay = 0;
 			
-			if($this.data('current')){
-				$(xml).find('scenes transition[from='+$this.data('current')+'][to='+id+']').each(function(){	
+			if($self.data('current')){
+				$xml.find('scenes transition[from='+$self.data('current')+'][to='+id+']').each(function(){	
 					//console.log(this);				
-					$this.nm8('runActions',$(this), $this.data('current'));
+					$self.nm8('runActions',$(this), $self.data('current'));
 					delay = $(this).attr('timeframe');	
 				});				
 			}		
 			
 			if(delay){
 				setTimeout(function(){	
-					$this.data('current', id );
-					$(xml).find('scenes scene[id='+id+'] init').each(function(){
-						$this.nm8('runActions',$(this), id);	
+					$self.data('current', id );
+					$xml.find('scenes scene[id='+id+'] init').each(function(){
+						$self.nm8('runActions',$(this), id);	
 					});				
-				},delay);			
+				}, delay);			
 			} else {
-				$this.data('current', id );
-				$(xml).find('scenes scene[id='+id+'] init').each(function(){
-				$this.nm8('runActions',$(this), id);	
+				$self.data('current', id );
+				$xml.find('scenes scene[id='+id+'] init').each(function(){
+				$self.nm8('runActions',$(this), id);	
 			});				
 			}			
 			
 		},
 		
 		runActions:function(itemActions,sceneId){
-			var $this = $(this);				
+			var $self = $(this);				
 						
 			function passThrough(subAction,sceneId){				
-				$this.nm8('runActions',subAction,sceneId);	
+				$self.nm8('runActions',subAction,sceneId);	
 			}			
 			
 			$(itemActions).children('action, wait, repeat,xmlAction,extensionAction').each(function(){	
 			var $act = $(this);
 			var itemID = $act.attr('itemID');
-			var xml = $this.data('screenplay');
+			var xml = $self.data('screenplay');
 			
 			var actionExpression = $act.prop('tagName');
 			
@@ -121,7 +127,7 @@
 				case "wait":
 					var myTimeout = setTimeout(function(){
 						//clean up any timer functions on scene change								
-						if($this.data('current') !== sceneId){
+						if($self.data('current') !== sceneId){
 							clearTimeout(myTimeout);
 						} else{
 							passThrough($act,sceneId);	
@@ -132,7 +138,7 @@
 				case "actionGroup":
 					$(xml).find('actionGroups actionGroup[name='+$act.attr('name')+']').each(function(){						
 						$act.text($(this).text());
-						$this.nm8('runScript',itemID,sceneId,$act);						
+						$self.nm8('runScript',itemID,sceneId,$act);						
 					});			
 				break;
 
@@ -172,27 +178,27 @@
 				break;
 			
 				case "nextScene":
-					$this.nm8('runScene',$this.data('current' )+1);
+					$self.nm8('runScene',$self.data('current' )+1);
 				break;
 				
 				case "prevScene":
-					$this.nm8('runScene',$this.data('current' )-1);
+					$self.nm8('runScene',$self.data('current' )-1);
 				break;
 				
 				case "runScene":									
-					$this.nm8('runScene',$act.attr('sceneId'));
+					$self.nm8('runScene',$act.attr('sceneId'));
 				break;
 
 				default:
 					console.log($act.attr('name'));
-					$this.nm8($act.attr('name'),itemID,sceneId,$act);
+					$self.nm8($act.attr('name'),itemID,sceneId,$act);
 				}
 			
 			});					
 		},	
 		
 		addItem : function( id, payload,hide,width,height, top, left, zindex, onClick, parentID ){			
-			var $this = $(this);			
+			var $self = $(this);			
 			var strDisplay = "";	
 			parentID = (parentID==null )? '.nm8Stage .lens' : '#' + parentID + '_payload' ;
 			hide = (hide==null)? 0 : hide ;
@@ -207,7 +213,7 @@
 			$(parentID).append("<div id='"+id+"_container' class='nm8Container nm8Parent' style='"+strDisplay+"width:"+width+"%;height:"+height+"%;top:"+top+"%; left:"+left+"%; z-index:"+zindex+";'><div class='nm8Bouncer'><div class='nm8Shaker'><div id='"+id+"' class='nm8Payload'>"+payload+"</div></div></div></div>");
 
 			$('#'+id+'_container').unbind("click").click(function(){			
-				$this.nm8('runItemActions','click',id);
+				$self.nm8('runItemActions','click',id);
 				return false;						
 			});
 			
@@ -215,17 +221,13 @@
 			
 		runItemActions : function(type,id){
 			//console.log(type,id);
-			var $this = $(this);
+			var $self = $(this);
 			var xml = $this.data('screenplay');				
 			
-			$(xml).find('inventory item[id='+id+'] '+type+'').each(function(){	
-				
-				$this.nm8('runActions',$(this), $this.data('current'));						
-			});				
-			
+			$(xml).find('inventory item[id='+id+'] '+type+'').each(function(){
+				$self.nm8('runActions',$(this), $self.data('current'));						
+			});
 		},
-		
-
 
 /*
  ********************  Item Manipulation functions ********************************
@@ -233,31 +235,31 @@
 
 
 		changeClass: function(id, sceneId, obj){
-			var itemContainer = '#' +id+'_container';	
+			var itemContainer = '#' + id +'_container';	
 			$(itemContainer).attr('class', obj.attr('className'));			
 		},
 
 		addClass: function(id, sceneId, obj){
-			var itemContainer = '#' +id+'_container';	
+			var itemContainer = '#' + id +'_container';	
 			$(itemContainer).addClass(obj.attr('className'));			
 		},
 
 		removeClass: function(id, sceneId, obj){
-			var itemContainer = '#' +id+'_container';	
+			var itemContainer = '#' + id +'_container';	
 			$(itemContainer).removeClass(obj.attr('className'));			
 		},		
 
 		removeItem: function(id, sceneId, obj){			
-			$(this).remove('id+'_container);			
+			$(this).remove('id' + _container);			
 		},	
 		
 		show: function(id, sceneId, obj){			
-			var itemContainer = '#' +id+'_container';	
+			var itemContainer = '#' + id +'_container';	
 			$(itemContainer).show(obj.attr('effect'),{},obj.attr('speed') );		
 		},
 			
 		hide: function(id, sceneId, obj){			
-			var itemContainer = '#' +id+'_container';		
+			var itemContainer = '#' + id +'_container';		
 			$(itemContainer).hide(obj.attr('effect'),{},obj.attr('speed'));	
 		},			
 			
@@ -272,14 +274,14 @@
 		scrollV: function(id, sceneId, obj){	
 			
 			var duration = obj.attr('duration');
-			var itemContainer = '#' +id+'_container';			
-			var $this = $(this);
+			var $itemContainer = $('#' +id+'_container');			
+			var $self = $(this);
 
-			var itemHeight = $(itemContainer).height();						
+			var itemHeight = $itemContainer.height();						
 			var lensHeight = $(this).height();
 			var totalHeight = lensHeight + itemHeight;	
 			
-			var currentItemTopPosition = $(itemContainer).position().top;				
+			var currentItemTopPosition = $itemContainer.position().top;				
 			var itemPercentage = Math.floor(( itemHeight / lensHeight )*100);				
 			var maxTop = (0) - itemPercentage;			
 			var timePertentage = currentItemTopPosition / totalHeight; 
@@ -293,9 +295,9 @@
 				iterationDuration = Math.floor(duration * (1-timePertentage));				
 			} 
 			
-			$(itemContainer).animate({top: ''+destination+'%'}, iterationDuration, 'linear');
-			$(itemContainer).animate({top: ''+start+'%'}, 0, 'linear',function() {
-				$this.nm8('scrollV',id, sceneId, obj);
+			$itemContainer.animate({top: ''+destination+'%'}, iterationDuration, 'linear');
+			$itemContainer.animate({top: ''+start+'%'}, 0, 'linear',function() {
+				$self.nm8('scrollV',id, sceneId, obj);
 			});	
 			
 		},
@@ -303,13 +305,13 @@
 		scrollH: function(id, sceneId, obj){			
 			
 			var duration = obj.attr('duration');			
-			var itemContainer = '#' +id+'_container';			
-			var $this = $(this);
+			var $itemContainer = $('#' +id+'_container');			
+			var $self = $(this);
 			
-			var itemWidth = $(itemContainer).width();						
+			var itemWidth = $itemContainer.width();						
 			var lensWidth = $(this).width();
 			var totalWidth = lensWidth + itemWidth;			
-			var currentItemLeftPosition = $(itemContainer).position().left;				
+			var currentItemLeftPosition = $itemContainer.position().left;				
 			var itemPercentage = Math.floor(( itemWidth / lensWidth )*100);				
 			var maxLeft = (0) - itemPercentage;			
 			var timePertentage = currentItemLeftPosition / totalWidth; 
@@ -324,21 +326,20 @@
 				iterationDuration = Math.floor(duration * (1-timePertentage));				
 			} 
 			
-			$(itemContainer).animate({left: ''+destination+'%'}, iterationDuration, 'linear');
-			$(itemContainer).animate({left: ''+start+'%'}, 0, 'linear',function() {
-				$this.nm8('scrollH',id, sceneId, obj);
+			$itemContainer.animate({left: ''+destination+'%'}, iterationDuration, 'linear');
+			$itemContainer.animate({left: ''+start+'%'}, 0, 'linear',function() {
+				$self.nm8('scrollH',id, sceneId, obj);
 			});				
 
 		},
 		
 		move: function(id, sceneId, obj){	
 			obj.attr('details','{"top":"'+obj.attr('top')+'","left":"'+obj.attr('left')+'"}');			
-			var $this = $(this);
-			$this.nm8('alterProperties',id,sceneId,obj );
+			$(this).nm8('alterProperties', id, sceneId, obj );
 		},
 			
 		alterProperties: function(id, sceneId, obj){				
-			var itemContainer = '#' +id+'_container';		
+			var $itemContainer = $('#' +id+'_container');		
 			
 			var animate = (obj.attr('animate')==null)? 0 : obj.attr('animate') ;
 			var duration = (obj.attr('duration')==null)? 1 : obj.attr('duration') ;
@@ -346,44 +347,44 @@
 			var details = jQuery.parseJSON(obj.attr('details'));
 			
 			if(animate==1){
-				$(itemContainer).animate(details, duration, easing);	
+				$itemContainer.animate(details, duration, easing);	
 			} else {				
-				$(itemContainer).css(details);
+				$itemContainer.css(details);
 			}
 		},
 	
 		bounce: function(id, sceneId, obj){			
-			var bounceContainer = '#'+id+'_container .nm8Bouncer';	
+			var $bounceContainer = ('#'+id+'_container .nm8Bouncer');	
 			var duration = obj.attr('duration');
 			var step = obj.attr('step');
-			var $this = $(this);			
+			var $self = $(this);			
 			var myInterval = "";
 			
-			$(bounceContainer).animate({top:"-="+step+"%"},Math.floor(duration/2)).animate({top:"+="+step+"%"},Math.floor(duration/2));	
-			if($this.data('animationSwitch')){
+			$bounceContainer.animate({top:"-="+step+"%"},Math.floor(duration/2)).animate({top:"+="+step+"%"},Math.floor(duration/2));	
+			if($self.data('animationSwitch')){
 				myInterval = setInterval( function() {			
-					if($this.data('current') !== sceneId){					
+					if($self.data('current') !== sceneId){					
 						clearInterval(myInterval);					
 					} else{
-						$(bounceContainer).animate({top:"-="+step+"%"},Math.floor(duration/2)).animate({top:"+="+step+"%"},Math.floor(duration/2));	
+						$bounceContainer.animate({top:"-="+step+"%"},Math.floor(duration/2)).animate({top:"+="+step+"%"},Math.floor(duration/2));	
 					}
 				},duration);			
 			}	
 		},
 		
 		shake: function(id, sceneId, obj){
-			var shakeContainer = '#'+id+'_container .nm8Shaker';
-			var $this = $(this);
+			var $shakeContainer = $('#'+id+'_container .nm8Shaker');
+			var $self = $(this);
 			var duration = obj.attr('duration');
 			var step = obj.attr('step');
 			var myInterval = "";			
-			$(shakeContainer).animate({left:"-="+step+"%"},Math.floor(duration/2)).animate({left:"+="+step+"%"},Math.floor(duration/2));	
-			if($this.data('animationSwitch')){
+			$shakeContainer.animate({left:"-="+step+"%"},Math.floor(duration/2)).animate({left:"+="+step+"%"},Math.floor(duration/2));	
+			if($self.data('animationSwitch')){
 				myInterval = setInterval( function() {			
-					if($this.data('current') !== sceneId){					
+					if($self.data('current') !== sceneId){					
 						clearInterval(myInterval);					
 					} else{
-						$(shakeContainer).animate({left:"-="+step+"%"},Math.floor(duration/2)).animate({left:"+="+step+"%"},Math.floor(duration/2));	
+						$shakeContainer.animate({left:"-="+step+"%"},Math.floor(duration/2)).animate({left:"+="+step+"%"},Math.floor(duration/2));	
 					}
 				} ,duration);
 			}
