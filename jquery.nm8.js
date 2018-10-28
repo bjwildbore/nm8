@@ -12,13 +12,13 @@
 				dataType: "xml",
 				
 				error:function(xhr, ajaxOptions, thrownError){
-					//console.log(xhr.status);
-					//console.log(thrownError);
+					console.log(xhr.status);
+					console.log(thrownError);
 				},
 			
 				success: function(xml) {				
-					$self.data('screenplay' , xml);
-					$self.data('current' , 0);
+					$self.data('screenplay', xml);
+					$self.data('current', 0);
 					
 					$(xml).find('stageconfig').each(function(){												
 						$self.nm8('createStage');
@@ -98,13 +98,13 @@
 			} else {
 				$self.data('current', id );
 				$xml.find('scenes scene[id='+id+'] init').each(function(){
-				$self.nm8('runActions',$(this), id);	
-			});				
+					$self.nm8('runActions',$(this), id);
+				});				
 			}			
 			
 		},
 		
-		runActions:function(itemActions,sceneId){
+		runActions: function(itemActions,sceneId){
 			var $self = $(this);				
 						
 			function passThrough(subAction,sceneId){				
@@ -161,8 +161,7 @@
 								} else{
 									passThrough($act,sceneId);	
 								}
-							},timeout);								
-						
+							}, timeout);
 						}
 					} else {				
 						passThrough($act,sceneId);				
@@ -192,9 +191,9 @@
 				default:
 					console.log($act.attr('name'));
 					$self.nm8($act.attr('name'),itemID,sceneId,$act);
-				}
-			
-			});					
+				}			
+			}
+			);					
 		},	
 		
 		addItem : function( id, payload,hide,width,height, top, left, zindex, onClick, parentID ){			
@@ -354,7 +353,7 @@
 		},
 	
 		bounce: function(id, sceneId, obj){			
-			var $bounceContainer = ('#'+id+'_container .nm8Bouncer');	
+			var $bounceContainer = $('#'+id+'_container .nm8Bouncer');	
 			var duration = obj.attr('duration');
 			var step = obj.attr('step');
 			var $self = $(this);			

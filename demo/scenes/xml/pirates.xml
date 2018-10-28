@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<screenplay> 
+	<config>
+		<appversion id='appversion' value='1' />
+		<stageconfig id='stage' width='720' height='540' border='0' />
+	</config>
+
+	<style>
+	<![CDATA[
+		#sky{background-image:url('scenes/images/sky.png')} 
+		#pirate{background-image:url('scenes/images/pirate1.png')}   
+		#waves1{background-image:url('scenes/images/waves1.png')}   
+		#waves2{background-image:url('scenes/images/waves2.png')}  
+		#cloud3{background-image:url('scenes/images/cloud3.png')}   
+		#cloud4{background-image:url('scenes/images/cloud4.png')}    
+		#plane{background-image:url('scenes/images/plane.png')}    
+	]]>
+	</style>	
+
+	<inventory>	
+		<item id='sky' width='200' height='100' layer='92' top="0" left="0"  />		
+		<item id='pirate'  width='17' height='30' layer='97' top="75" left="20" />
+		<item id='waves1'  width='120' height='20' layer='98' top="85" left="0" />
+		<item id='waves2'  width='120' height='17' layer='96' top="83" left="0" />
+		<item id='cloud3'  width='24' height='36' layer='98' top="15" left="10" />
+		<item id='cloud4'  width='24' height='36' layer='96' top="-5" left="0" />
+		<item id='plane'  width='10' height='13' layer='97' top="25" left="20" />
+		
+	</inventory>
+
+	<scenes>	
+		<scene id='1' title='start'> 			
+			<init>
+				<action itemID='pirate' name='scrollH' direction='ltr' duration='10000' step='1' />	
+				<action itemID='cloud3' name='scrollH' direction='rtl' duration='40000' step='1' />	
+				<action itemID='cloud4' name='scrollH' direction='rtl' duration='170000' step='1' />	
+				<action itemID='plane' name='scrollH' direction='ltr' duration='5000' step='1' />	
+				<action itemID='pirate' name='bounce' duration='1500' step='5'  />	
+				<action itemID='waves1' name='bounce' duration='3000' step='3'  />
+				<action itemID='waves2' name='bounce' duration='2000' step='3'  />
+				<action itemID='waves1' name='shake' duration='10000' step='2'  />
+				<action itemID='waves2' name='shake' duration='30000' step='5'  />
+				<action itemID='plane' name='bounce' duration='2000' step='50'  />
+				<action itemID='cloud3' name='bounce' duration='3000' step='15'  />
+				<action itemID='cloud4' name='bounce' duration='2000' step='5'  />
+			</init>	
+		</scene>  
+	</scenes>
+</screenplay> 
